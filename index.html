@@ -81,14 +81,16 @@
     </div>
     
     <script>
-    $("#Donate").hide()
-        $("#btn").click(function(){
-            $("#video").hide()
-            $("#Donate").show()
-        })
-        $("#btn2").click(function(){
-            $("#video").show()
+    $(document).ready(function () {
             $("#Donate").hide()
+            $("#btn").click(function () {
+                $("#video").hide()
+                $("#Donate").show()
+            })
+            $("#btn2").click(function () {
+                $("#video").show()
+                $("#Donate").hide()
+            })
         })
         
     const input = document.getElementById("searchInput");
