@@ -14,10 +14,13 @@
 </head>
 
 <body class="bg-dark text-light">
-    <div class="container mt-4">
+    <div id="video" class="container mt-4">
         <div class="mb-3 position-relative">
-            <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm video...">
-            <ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+            <div class="d-flex">
+                <input type="text" id="searchInput" class="form-control w-50" placeholder="Tìm kiếm video...">
+                <button id="btn" class="btn">Donate</button>
+                <ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+            </div>
         </div>
 
         <div class="row row-cols-4" id="videoContainer">
@@ -69,10 +72,25 @@
 
             
         </div>
-
     </div>
 
+    <div id="Donate" class="text-light">
+        <h1 class="text-light">Donate hỗ trợ mik để có thêm các vđ hay hơn nhé!!!</h1>
+        <img src="./qr.jpg" alt="">
+        <p><button id="btn" class="btn">Trở lại</button></p>
+    </div>
+    
     <script>
+    $("#Donate").hide()
+        $("#btn").click(function(){
+            $("#video").hide()
+            $("#Donate").show()
+        })
+        $("#btn2").click(function(){
+            $("#video").show()
+            $("#Donate").hide()
+        })
+        
     const input = document.getElementById("searchInput");
     const suggestions = document.getElementById("suggestions");
     const videoItems = document.querySelectorAll(".video-item");
