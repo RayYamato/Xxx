@@ -267,6 +267,22 @@
 
             
         </div>
+        <p><button id="btn3" class="btn text-light">Xem ảnh</button></p>
+    </div>
+
+    <div id="imgsex">
+        <div class="container">
+            <p><button id="btn2" class="btn text-light">Trở lại</button></p>
+            <div class="row row-cols-4">
+                <div class="mt-4 p-3"><img class="img-fluid d-block mx-auto" src="./img0.jpg" alt=""></div>
+
+
+
+
+
+                
+            </div>
+        </div>
     </div>
 
     <div id="Donate" class="text-light text-center">
@@ -278,6 +294,7 @@
     <script>
     $(document).ready(function () {
             $("#Donate").hide()
+            $("#imgsex").hide()
             $("#btn").click(function () {
                 $("#video").hide()
                 $("#Donate").show()
@@ -285,6 +302,7 @@
             $("#btn2").click(function () {
                 $("#video").show()
                 $("#Donate").hide()
+                $("#imgsex").hide()
             })
         })
         
