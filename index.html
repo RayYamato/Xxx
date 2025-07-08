@@ -90,18 +90,6 @@
                 name.includes(value) ||
                 tags.some(tag => tag.includes(value));
 
-            // Gợi ý
-            if (value && isMatch) {
-                const li = document.createElement("li");
-                li.textContent = `${item.dataset.name}${rawTags ? ', ' + rawTags : ''}`;
-                li.classList.add("list-group-item", "list-group-item-action");
-                li.onclick = () => {
-                    input.value = value;
-                    suggestions.innerHTML = "";
-                    filterVideos(value);
-                };
-                suggestions.appendChild(li);
-            }
 
             // Hiện hoặc ẩn video
             item.style.display = value ? (isMatch ? "block" : "none") : "block";
