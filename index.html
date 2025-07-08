@@ -267,7 +267,9 @@
 
             
         </div>
-        <p><button id="btn3" class="btn text-light">Xem ảnh</button></p>
+        <div>
+            <p><button id="btn3" class="btn text-light">Xem ảnh</button></p>
+        </div>
     </div>
 
     <div id="imgsex">
@@ -303,6 +305,11 @@
                 $("#video").show()
                 $("#Donate").hide()
                 $("#imgsex").hide()
+            })
+            $("#btn3").click(function () {
+                $("#video").hide()
+                $("#Donate").hide()
+                $("#imgsex").show()
             })
         })
         
