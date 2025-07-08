@@ -4,14 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Video Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-3fnm2IZ4aH8aZlKuhfG6v92TpVs4k2hW0MWvW2ZyCGA=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <video width="100%" height="100%" autoplay muted loop>
-        <source src="tit.mp4" type="video/mp4">
-        Trình duyệt của bạn không hỗ trợ video.
-    </video>
+    <div class="container mt-4">
+        <div class="mb-3 position-relative">
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm video...">
+            <ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+        </div>
+
+        <div class="row row-cols-4" id="videoContainer">
+            <div class="col video-item" data-name="Tit">
+                <video width="100%" controls>
+                    <source src="videos/tit.mp4" type="video/mp4">
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
+                <p class="mt-2 text-center">Tit</p>
+            </div>
+
+            <div class="col video-item" data-name="Tits">
+                <video width="100%" controls>
+                    <source src="videos/Tits.mp4" type="video/mp4">
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
+                <p class="mt-2 text-center">Tits</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const input = document.getElementById("searchInput");
+        const suggestions = document.getElementById("suggestions");
+        const videoItems = document.querySelectorAll(".video-item");
+
+        input.addEventListener("input", function () {
+            const value = input.value.toLowerCase();
+            suggestions.innerHTML = "";
+
+            videoItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const isMatch = name.includes(value);
+
+                // Gợi ý
+                if (value && isMatch) {
+                    const li = document.createElement("li");
+                    li.textContent = item.dataset.name;
+                    li.classList.add("list-group-item", "list-group-item-action");
+                    li.onclick = () => {
+                        input.value = item.dataset.name;
+                        suggestions.innerHTML = "";
+                        filterVideos(item.dataset.name.toLowerCase());
+                    };
+                    suggestions.appendChild(li);
+                }
+
+                // Hiện hoặc ẩn video
+                item.style.display = value ? (isMatch ? "block" : "none") : "block";
+            });
+        });
+
+        function filterVideos(keyword) {
+            videoItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                item.style.display = name.includes(keyword) ? "block" : "none";
+            });
+        }
+    </script>
+
+
+
 </body>
 
 </html>
