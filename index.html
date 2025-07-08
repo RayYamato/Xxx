@@ -104,11 +104,19 @@
         });
 
         function filterVideos(keyword) {
-            videoItems.forEach(item => {
-                const name = item.dataset.name.toLowerCase();
-                item.style.display = name.includes(keyword) ? "block" : "none";
-            });
-        }
+        keyword = keyword.trim().toLowerCase();
+        videoItems.forEach(item => {
+            const name = item.dataset.name?.toLowerCase() || "";
+            const rawTags = item.dataset.tag?.toLowerCase() || "";
+            const tags = rawTags.split(',').map(t => t.trim());
+
+            const match =
+                name.includes(keyword) ||
+                tags.some(tag => tag.includes(keyword));
+
+            item.style.display = match ? "block" : "none";
+        });
+    }
     </script>
 
 
