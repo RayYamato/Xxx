@@ -73,37 +73,42 @@
     </div>
 
     <script>
-        const input = document.getElementById("searchInput");
-        const suggestions = document.getElementById("suggestions");
-        const videoItems = document.querySelectorAll(".video-item");
+    const input = document.getElementById("searchInput");
+    const suggestions = document.getElementById("suggestions");
+    const videoItems = document.querySelectorAll(".video-item");
 
-        input.addEventListener("input", function () {
-            const value = input.value.toLowerCase();
-            suggestions.innerHTML = "";
+    input.addEventListener("input", function () {
+        const value = input.value.trim().toLowerCase();
+        suggestions.innerHTML = "";
 
-            videoItems.forEach(item => {
-                const name = item.dataset.name.toLowerCase();
-                const isMatch = name.includes(value);
+        videoItems.forEach(item => {
+            const name = item.dataset.name?.toLowerCase() || "";
+            const rawTags = item.dataset.tag?.toLowerCase() || "";
+            const tags = rawTags.split(',').map(t => t.trim());
 
-                // Gợi ý
-                if (value && isMatch) {
-                    const li = document.createElement("li");
-                    li.textContent = item.dataset.name;
-                    li.classList.add("list-group-item", "list-group-item-action");
-                    li.onclick = () => {
-                        input.value = item.dataset.name;
-                        suggestions.innerHTML = "";
-                        filterVideos(item.dataset.name.toLowerCase());
-                    };
-                    suggestions.appendChild(li);
-                }
+            const isMatch =
+                name.includes(value) ||
+                tags.some(tag => tag.includes(value));
 
-                // Hiện hoặc ẩn video
-                item.style.display = value ? (isMatch ? "block" : "none") : "block";
-            });
+            // Gợi ý
+            if (value && isMatch) {
+                const li = document.createElement("li");
+                li.textContent = `${item.dataset.name}${rawTags ? ', ' + rawTags : ''}`;
+                li.classList.add("list-group-item", "list-group-item-action");
+                li.onclick = () => {
+                    input.value = value;
+                    suggestions.innerHTML = "";
+                    filterVideos(value);
+                };
+                suggestions.appendChild(li);
+            }
+
+            // Hiện hoặc ẩn video
+            item.style.display = value ? (isMatch ? "block" : "none") : "block";
         });
+    });
 
-        function filterVideos(keyword) {
+    function filterVideos(keyword) {
         keyword = keyword.trim().toLowerCase();
         videoItems.forEach(item => {
             const name = item.dataset.name?.toLowerCase() || "";
@@ -117,10 +122,7 @@
             item.style.display = match ? "block" : "none";
         });
     }
-    </script>
-
-
-
+</script>
 </body>
 
 </html>
