@@ -418,15 +418,21 @@
             $("#Donate").hide();
             $("#imgsex").hide();
 
-            const videoItems = $(".video-item");
             const visibleCount = 12;
 
-            // Ẩn tất cả trừ 12 video đầu tiên
-            videoItems.each(function (index) {
-                if (index >= visibleCount) {
-                    $(this).addClass("hidden-video");
-                }
-            });
+            function updateInitialDisplay() {
+                const allItems = $(".video-item");
+                allItems.each(function (i) {
+                    if (i < visibleCount) {
+                        $(this).removeClass("hidden-video");
+                    } else {
+                        $(this).addClass("hidden-video");
+                    }
+                });
+                $("#more").show();
+            }
+
+            updateInitialDisplay(); // Gọi khi vừa tải trang
 
             // Nút Donate
             $("#btn").click(function () {
@@ -452,41 +458,36 @@
             // Nút xem thêm
             $("#more").click(function () {
                 $(".video-item").removeClass("hidden-video");
-                $(this).hide(); // Ẩn nút sau khi bấm
+                $(this).hide();
             });
 
             // Tìm kiếm
             $("#searchInput").on("input", function () {
                 const value = $(this).val().trim().toLowerCase();
+                const allItems = $(".video-item");
 
-                videoItems.each(function () {
+                allItems.each(function () {
                     const name = $(this).data("name")?.toLowerCase() || "";
                     const rawTags = $(this).data("tag")?.toLowerCase() || "";
                     const tags = rawTags.split(',').map(t => t.trim());
-
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
 
                     if (value === "") {
-                        // Nếu không có tìm kiếm: hiện 12 video đầu
-                        const index = $(this).index();
-                        if (index < visibleCount) {
-                            $(this).removeClass("hidden-video");
-                        } else {
-                            $(this).addClass("hidden-video");
-                        }
-                        $("#more").show(); // Hiện lại nút xem thêm nếu có xoá
+                        // Không có tìm kiếm: hiện lại đúng 12 cái
+                        updateInitialDisplay();
                     } else {
-                        // Nếu có tìm kiếm: hiện tất cả video khớp
+                        // Có tìm kiếm: hiện tất cả khớp
                         if (isMatch) {
                             $(this).removeClass("hidden-video");
                         } else {
                             $(this).addClass("hidden-video");
                         }
-                        $("#more").hide(); // Ẩn nút khi tìm kiếm
+                        $("#more").hide();
                     }
                 });
             });
         });
+
     </script>
 
 </body>
