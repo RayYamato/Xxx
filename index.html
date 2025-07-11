@@ -1041,6 +1041,24 @@
             });
         });
     });
+        // Dừng video khi chuyển tab
+document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+        $("video").each(function () {
+            this.pause();
+        });
+    }
+});
+
+// Dừng video khi ra khỏi vùng nhìn thấy
+window.addEventListener('scroll', function () {
+    $('video').each(function () {
+        const rect = this.getBoundingClientRect();
+        const inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+
+        if (!inView) this.pause();
+    });
+});
 </script>
 </body>
 
