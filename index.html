@@ -965,6 +965,18 @@
 
             const visibleCount = 12;
 
+            function shuffleVideos() {
+                const container = $("#videoContainer");
+                const videos = container.children(".video-item").toArray();
+
+                for (let i = videos.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [videos[i], videos[j]] = [videos[j], videos[i]];
+                }
+
+                container.empty().append(videos);
+            }
+
             function updateInitialDisplay() {
                 const allItems = $(".video-item");
                 allItems.each(function (i) {
@@ -977,7 +989,9 @@
                 $("#more").show();
             }
 
-            updateInitialDisplay(); // Gọi khi vừa tải trang
+            // Gọi xáo trộn và hiển thị ban đầu
+            shuffleVideos();
+            updateInitialDisplay();
 
             // Nút Donate
             $("#btn").click(function () {
@@ -1018,10 +1032,8 @@
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
 
                     if (value === "") {
-                        // Không có tìm kiếm: hiện lại đúng 12 cái
                         updateInitialDisplay();
                     } else {
-                        // Có tìm kiếm: hiện tất cả khớp
                         if (isMatch) {
                             $(this).removeClass("hidden-video");
                         } else {
@@ -1032,6 +1044,7 @@
                 });
             });
         });
+
 
     </script>
 
