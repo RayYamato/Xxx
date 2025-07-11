@@ -999,7 +999,7 @@
             showVideos(visibleCount);
         }
 
-        // Bắt đầu
+        // Shuffle and show first 12
         shuffle(allItems);
         resetToDefault();
 
@@ -1011,26 +1011,10 @@
             }
         });
 
-        // Nút chuyển Donate / Ảnh
-        $("#btn").click(function () {
-            $("#video").hide();
-            $("#Donate").show();
-            $("#btn3").hide();
-        });
-
-        $("#btn2, #btn4").click(function () {
-            $("#video").show();
-            $("#Donate").hide();
-            $("#imgsex").hide();
-            $("#btn3").show();
-        });
-
-        $("#btn3").click(function () {
-            $("#video").hide();
-            $("#Donate").hide();
-            $("#imgsex").show();
-            $("#btn3").hide();
-        });
+        // Donate + Ảnh
+        $("#btn").click(() => { $("#video").hide(); $("#Donate").show(); $("#btn3").hide(); });
+        $("#btn2, #btn4").click(() => { $("#video").show(); $("#Donate").hide(); $("#imgsex").hide(); $("#btn3").show(); });
+        $("#btn3").click(() => { $("#video").hide(); $("#Donate").hide(); $("#imgsex").show(); $("#btn3").hide(); });
 
         // Tìm kiếm
         $("#searchInput").on("input", function () {
@@ -1046,12 +1030,9 @@
 
             $(".video-item").each(function () {
                 const name = ($(this).attr("data-name") || "").toLowerCase();
-                const tag = ($(this).attr("data-tag") || "").toLowerCase();
+                const tags = ($(this).attr("name-tag") || "").toLowerCase();
 
-                const matchName = name.includes(keyword);
-                const matchTag = tag.split(',').some(t => t.trim().includes(keyword));
-
-                if (matchName || matchTag) {
+                if (name.includes(keyword) || tags.includes(keyword)) {
                     $(this).removeClass("hidden-video");
                 } else {
                     $(this).addClass("hidden-video");
