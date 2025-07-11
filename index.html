@@ -999,7 +999,7 @@
             showVideos(visibleCount);
         }
 
-        // Shuffle and show first 12
+        // Khởi tạo ban đầu
         shuffle(allItems);
         resetToDefault();
 
@@ -1011,7 +1011,7 @@
             }
         });
 
-        // Donate + Ảnh
+        // Nút chuyển giao diện
         $("#btn").click(() => { $("#video").hide(); $("#Donate").show(); $("#btn3").hide(); });
         $("#btn2, #btn4").click(() => { $("#video").show(); $("#Donate").hide(); $("#imgsex").hide(); $("#btn3").show(); });
         $("#btn3").click(() => { $("#video").hide(); $("#Donate").hide(); $("#imgsex").show(); $("#btn3").hide(); });
@@ -1041,6 +1041,7 @@
         });
     });
 </script>
+
 </body>
 
 </html>
