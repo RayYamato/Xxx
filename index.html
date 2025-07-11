@@ -991,7 +991,7 @@
                 }
             });
 
-            if (clickCount >= 1 || maxVisible >= allItems.length) {
+            if (maxVisible >= allItems.length) {
                 $("#more").hide();
             } else {
                 $("#more").show();
@@ -1004,11 +1004,11 @@
             updateVisibleVideos();
         }
 
-        // Gọi xáo trộn ban đầu
+        // Shuffle video ban đầu
         shuffleVideos();
         resetView();
 
-        // Nút "Donate"
+        // Donate / Ảnh
         $("#btn").click(function () {
             $("#video").hide();
             $("#Donate").show();
@@ -1029,7 +1029,7 @@
             $("#btn3").hide();
         });
 
-        // Nút "Xem thêm"
+        // Nút Xem thêm
         $("#more").click(function () {
             if (!isSearching) {
                 clickCount++;
@@ -1039,34 +1039,33 @@
 
         // Tìm kiếm
         $("#searchInput").on("input", function () {
-            const value = $(this).val().trim().toLowerCase();
+            const keyword = $(this).val().trim().toLowerCase();
             const allItems = $(".video-item");
 
-            if (value === "") {
-                // Trở lại mặc định nếu không nhập gì
-                resetView();
+            if (keyword === "") {
+                resetView(); // Quay về hiển thị 12 video đầu
             } else {
                 isSearching = true;
+                $("#more").hide(); // Ẩn nút khi tìm
 
                 allItems.each(function () {
-                    const name = $(this).data("name")?.toLowerCase() || "";
-                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
-                    const tags = rawTags.split(',').map(t => t.trim());
+                    const name = ($(this).attr("data-name") || "").toLowerCase();
+                    const tags = ($(this).attr("data-tag") || "").toLowerCase();
 
-                    const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+                    const matchName = name.includes(keyword);
+                    const matchTag = tags.split(',').some(tag => tag.trim().includes(keyword));
 
-                    if (isMatch) {
+                    if (matchName || matchTag) {
                         $(this).removeClass("hidden-video");
                     } else {
                         $(this).addClass("hidden-video");
                     }
                 });
-
-                $("#more").hide(); // Ẩn nút khi tìm kiếm
             }
         });
     });
 </script>
+
 
 
 
