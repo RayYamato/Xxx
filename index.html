@@ -959,107 +959,115 @@
     </div>
 
     <script>
-    $(document).ready(function () {
-        $("#Donate").hide();
-        $("#imgsex").hide();
+$(document).ready(function () {
+    $("#Donate").hide();
+    $("#imgsex").hide();
 
-        const step = 12;
-        let visibleCount = step;
-        let isSearching = false;
+    let visibleCount = 12;
 
-        const allItems = $(".video-item").toArray();
+    function shuffleVideos() {
+        const container = $("#videoContainer");
+        const videos = container.children(".video-item").toArray();
 
-        function shuffle(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
+        for (let i = videos.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [videos[i], videos[j]] = [videos[j], videos[i]];
         }
 
-        function renderVideos() {
-            $("#videoContainer").empty();
-            allItems.forEach(item => $("#videoContainer").append(item));
-        }
+        container.empty().append(videos);
+    }
 
-        function showDefaultVideos() {
-            $(".video-item").addClass("hidden-video");
-            $(".video-item").slice(0, visibleCount).removeClass("hidden-video");
-
-            // Ẩn nút nếu đã hiện 24 video
-            if (visibleCount >= 24 || visibleCount >= $(".video-item").length) {
-                $("#more").hide();
+    function updateInitialDisplay() {
+        const allItems = $(".video-item");
+        allItems.each(function (i) {
+            if (i < visibleCount) {
+                $(this).removeClass("hidden-video");
             } else {
-                $("#more").show();
-            }
-        }
-
-        function resetDefaultView() {
-            isSearching = false;
-            visibleCount = step;
-            shuffle(allItems);
-            renderVideos();
-            showDefaultVideos();
-        }
-
-        // ✅ Load trang: khởi tạo
-        resetDefaultView();
-
-        // 👉 Nút "Xem thêm"
-        $("#more").click(function () {
-            if (!isSearching) {
-                visibleCount += step;
-                showDefaultVideos();
+                $(this).addClass("hidden-video");
             }
         });
 
-        // 👉 Chuyển giữa các phần
-        $("#btn").click(() => { $("#video").hide(); $("#Donate").show(); $("#btn3").hide(); });
-        $("#btn2, #btn4").click(() => { $("#video").show(); $("#Donate").hide(); $("#imgsex").hide(); $("#btn3").show(); });
-        $("#btn3").click(() => { $("#video").hide(); $("#Donate").hide(); $("#imgsex").show(); $("#btn3").hide(); });
+        if (visibleCount >= allItems.length) {
+            $("#more").hide();
+        } else {
+            $("#more").show();
+        }
+    }
 
-        // 👉 Tìm kiếm
-        $("#searchInput").on("input", function () {
-            const keyword = $(this).val().trim().toLowerCase();
+    // Xáo trộn và hiển thị ban đầu
+    shuffleVideos();
+    updateInitialDisplay();
 
-            if (keyword === "") {
-                resetDefaultView();
-                return;
-            }
+    // Nút Donate
+    $("#btn").click(function () {
+        $("#video").hide();
+        $("#Donate").show();
+        $("#btn3").hide();
+    });
 
-            isSearching = true;
-            $("#more").hide(); // ẩn nút xem thêm khi tìm kiếm
+    $("#btn2, #btn4").click(function () {
+        $("#video").show();
+        $("#Donate").hide();
+        $("#imgsex").hide();
+        $("#btn3").show();
+    });
 
-            $(".video-item").each(function () {
-                const name = ($(this).attr("data-name") || "").toLowerCase();
-                const tags = ($(this).attr("name-tag") || "").toLowerCase();
+    // Nút Xem ảnh
+    $("#btn3").click(function () {
+        $("#video").hide();
+        $("#Donate").hide();
+        $("#imgsex").show();
+        $("#btn3").hide();
+    });
 
-                if (name.includes(keyword) || tags.includes(keyword)) {
+    // Nút Xem thêm
+    $("#more").click(function () {
+        visibleCount += 12;
+        updateInitialDisplay();
+    });
+
+    // Tìm kiếm
+    $("#searchInput").on("input", function () {
+        const value = $(this).val().trim().toLowerCase();
+        const allItems = $(".video-item");
+
+        if (value === "") {
+            // Quay về hiển thị mặc định
+            visibleCount = 12;
+            updateInitialDisplay();
+        } else {
+            let matchCount = 0;
+
+            allItems.each(function () {
+                const name = $(this).data("name")?.toLowerCase() || "";
+                const rawTags = $(this).attr("name-tag")?.toLowerCase() || "";
+                const tags = rawTags.split(',').map(t => t.trim());
+                const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+
+                if (isMatch) {
                     $(this).removeClass("hidden-video");
+                    matchCount++;
                 } else {
                     $(this).addClass("hidden-video");
                 }
             });
-        });
+
+            // Khi tìm kiếm thì luôn ẩn nút xem thêm
+            $("#more").hide();
+        }
     });
-        // Dừng video khi chuyển tab
-document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-        $("video").each(function () {
-            this.pause();
-        });
-    }
-});
 
-// Dừng video khi ra khỏi vùng nhìn thấy
-window.addEventListener('scroll', function () {
-    $('video').each(function () {
-        const rect = this.getBoundingClientRect();
-        const inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
-
-        if (!inView) this.pause();
+    // Dừng video khi chuyển trang/tab
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            $("video").each(function () {
+                this.pause();
+            });
+        }
     });
 });
 </script>
+
 </body>
 
 </html>
