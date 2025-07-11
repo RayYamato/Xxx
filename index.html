@@ -962,35 +962,12 @@
 
     
       <script>
-           function pauseAllVideos() {
-            $("video").each(function () {
-                this.pause();
-                this.currentTime = 0; // nếu muốn dừng và quay lại đầu
-            });
-        
-            $("iframe").each(function () {
-                const src = $(this).attr("src");
-                $(this).attr("src", src); // reload iframe để dừng phát lại
-            });
-        }
         $(document).ready(function () {
             $("#Donate").hide();
             $("#imgsex").hide();
 
-            // Xáo trộn video
-        function shuffleVideos() {
-            const container = $("#videoContainer");
-            const videos = container.children(".video-item").toArray();
-
-            for (let i = videos.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [videos[i], videos[j]] = [videos[j], videos[i]];
-            }
-
-            container.empty().append(videos);
-        }
             const visibleCount = 12;
-            
+
             function updateInitialDisplay() {
                 const allItems = $(".video-item");
                 allItems.each(function (i) {
@@ -1002,19 +979,17 @@
                 });
                 $("#more").show();
             }
-            shuffleVideos(); 
+
             updateInitialDisplay(); // Gọi khi vừa tải trang
 
             // Nút Donate
             $("#btn").click(function () {
-                pauseAllVideos(); // Dừng tất cả video
                 $("#video").hide();
                 $("#Donate").show();
                 $("#btn3").hide();
             });
 
             $("#btn2, #btn4").click(function () {
-                pauseAllVideos(); // Dừng tất cả video
                 $("#video").show();
                 $("#Donate").hide();
                 $("#imgsex").hide();
@@ -1022,7 +997,6 @@
             });
 
             $("#btn3").click(function () {
-                pauseAllVideos(); // Dừng tất cả video
                 $("#video").hide();
                 $("#Donate").hide();
                 $("#imgsex").show();
@@ -1037,37 +1011,28 @@
 
             // Tìm kiếm
             $("#searchInput").on("input", function () {
-                const value = normalizeText($(this).val());
-            
+                const value = $(this).val().trim().toLowerCase();
                 const allItems = $(".video-item");
-            
-                // Dừng tất cả video đang chạy
-                pauseAllVideos();
-            
-                if (value === "") {
-                    visibleCount = 12;
-                    updateInitialDisplay();
-                    return;
-                }
-            
+
                 allItems.each(function () {
-                    const name = normalizeText($(this).data("name") || "");
-                    const rawTags = normalizeText($(this).data("tag") || "");
+                    const name = $(this).data("name")?.toLowerCase() || "";
+                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
                     const tags = rawTags.split(',').map(t => t.trim());
-            
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
-            
-                    if (isMatch) {
-                        $(this).removeClass("hidden-video");
+
+                    if (value === "") {
+                        // Không có tìm kiếm: hiện lại đúng 12 cái
+                        updateInitialDisplay();
                     } else {
-                        $(this).addClass("hidden-video");
+                        // Có tìm kiếm: hiện tất cả khớp
+                        if (isMatch) {
+                            $(this).removeClass("hidden-video");
+                        } else {
+                            $(this).addClass("hidden-video");
+                        }
+                        $("#more").hide();
                     }
                 });
-            
-                // Khi tìm kiếm thì ẩn nút "xem thêm"
-                $("#more").hide();
-            });
-
             });
         });
 
