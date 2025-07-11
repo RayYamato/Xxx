@@ -965,7 +965,8 @@ $(document).ready(function () {
     let visibleCount = 12;
 
     function normalizeVietnamese(str) {
-        return (str || "").toLowerCase()
+        return (str || "")
+            .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")  // loại bỏ dấu
             .replace(/\s+/g, "");             // xóa khoảng trắng
@@ -1026,6 +1027,7 @@ $(document).ready(function () {
         updateInitialDisplay();
     });
 
+    // ===== Tìm kiếm =====
     $("#searchInput").on("input", function () {
         const keyword = normalizeVietnamese($(this).val().trim());
         const allItems = $(".video-item");
@@ -1036,8 +1038,11 @@ $(document).ready(function () {
         } else {
             allItems.each(function () {
                 const name = normalizeVietnamese($(this).data("name"));
-                const tag = normalizeVietnamese($(this).attr("name-tag"));
-                const isMatch = name.includes(keyword) || tag.includes(keyword);
+                const nameTag = normalizeVietnamese($(this).attr("name-tag"));
+
+                // Ghép cả name và tag rồi kiểm tra từ khoá có nằm trong đó không
+                const combined = name + " " + nameTag;
+                const isMatch = combined.includes(keyword);
 
                 if (isMatch) {
                     $(this).removeClass("hidden-video");
@@ -1046,11 +1051,11 @@ $(document).ready(function () {
                 }
             });
 
-            $("#more").hide(); // ẩn nút khi đang tìm
+            $("#more").hide(); // Ẩn nút khi tìm kiếm
         }
     });
 
-    // Tự dừng video khi chuyển tab
+    // ===== Auto pause video khi chuyển tab =====
     document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
             $("video").each(function () {
@@ -1060,6 +1065,7 @@ $(document).ready(function () {
     });
 });
 </script>
+
 </body>
 
 </html>
