@@ -965,6 +965,7 @@
 
         const step = 12;
         let clickCount = 0;
+        let isSearching = false;
 
         function shuffleVideos() {
             const container = $("#videoContainer");
@@ -990,7 +991,6 @@
                 }
             });
 
-            // Ẩn nút nếu đã nhấn 1 lần (tức hiển thị 24 video) hoặc đã hết video
             if (clickCount >= 1 || maxVisible >= allItems.length) {
                 $("#more").hide();
             } else {
@@ -1000,10 +1000,11 @@
 
         function resetView() {
             clickCount = 0;
+            isSearching = false;
             updateVisibleVideos();
         }
 
-        // Khởi tạo
+        // Gọi xáo trộn ban đầu
         shuffleVideos();
         resetView();
 
@@ -1030,8 +1031,10 @@
 
         // Nút "Xem thêm"
         $("#more").click(function () {
-            clickCount++;
-            updateVisibleVideos();
+            if (!isSearching) {
+                clickCount++;
+                updateVisibleVideos();
+            }
         });
 
         // Tìm kiếm
@@ -1040,13 +1043,16 @@
             const allItems = $(".video-item");
 
             if (value === "") {
-                // Nếu ô tìm kiếm rỗng => trở lại mặc định
+                // Trở lại mặc định nếu không nhập gì
                 resetView();
             } else {
+                isSearching = true;
+
                 allItems.each(function () {
                     const name = $(this).data("name")?.toLowerCase() || "";
                     const rawTags = $(this).data("tag")?.toLowerCase() || "";
                     const tags = rawTags.split(',').map(t => t.trim());
+
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
 
                     if (isMatch) {
@@ -1056,12 +1062,12 @@
                     }
                 });
 
-                // Ẩn nút xem thêm khi tìm kiếm
-                $("#more").hide();
+                $("#more").hide(); // Ẩn nút khi tìm kiếm
             }
         });
     });
 </script>
+
 
 
 </body>
