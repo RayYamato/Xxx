@@ -1037,37 +1037,37 @@
 
             // Tìm kiếm
             $("#searchInput").on("input", function () {
-                const value = $(this).val().trim().toLowerCase();
+                const value = normalizeText($(this).val());
+            
                 const allItems = $(".video-item");
-                // 🔴 Dừng tất cả video đang phát (video tag)
-                $("video").each(function () {
-                    this.pause();
-                });
-
-            // 🔴 Reset tất cả iframe video (ví dụ: Vimeo, YouTube)
-                $("iframe").each(function () {
-                    const src = $(this).attr("src");
-                    $(this).attr("src", src);
-                });
+            
+                // Dừng tất cả video đang chạy
+                pauseAllVideos();
+            
+                if (value === "") {
+                    visibleCount = 12;
+                    updateInitialDisplay();
+                    return;
+                }
+            
                 allItems.each(function () {
-                    const name = $(this).data("name")?.toLowerCase() || "";
-                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
+                    const name = normalizeText($(this).data("name") || "");
+                    const rawTags = normalizeText($(this).data("tag") || "");
                     const tags = rawTags.split(',').map(t => t.trim());
+            
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
-
-                    if (value === "") {
-                        // Không có tìm kiếm: hiện lại đúng 12 cái
-                        updateInitialDisplay();
+            
+                    if (isMatch) {
+                        $(this).removeClass("hidden-video");
                     } else {
-                        // Có tìm kiếm: hiện tất cả khớp
-                        if (isMatch) {
-                            $(this).removeClass("hidden-video");
-                        } else {
-                            $(this).addClass("hidden-video");
-                        }
-                        $("#more").hide();
+                        $(this).addClass("hidden-video");
                     }
                 });
+            
+                // Khi tìm kiếm thì ẩn nút "xem thêm"
+                $("#more").hide();
+            });
+
             });
         });
 
