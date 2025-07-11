@@ -964,51 +964,54 @@
         $("#imgsex").hide();
 
         const step = 12;
-        let clickCount = 0;
+        let visibleCount = step;
         let isSearching = false;
 
-        function shuffleVideos() {
-            const container = $("#videoContainer");
-            const videos = container.children(".video-item").toArray();
+        const allItems = $(".video-item").toArray();
 
-            for (let i = videos.length - 1; i > 0; i--) {
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [videos[i], videos[j]] = [videos[j], videos[i]];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-
-            container.empty().append(videos);
         }
 
-        function updateVisibleVideos() {
-            const allItems = $(".video-item");
-            const maxVisible = (clickCount + 1) * step;
+        function renderVideos() {
+            $("#videoContainer").empty();
+            allItems.forEach(item => $("#videoContainer").append(item));
+        }
 
-            allItems.each(function (i) {
-                if (i < maxVisible) {
-                    $(this).removeClass("hidden-video");
-                } else {
-                    $(this).addClass("hidden-video");
-                }
-            });
+        function showVideos(count) {
+            $(".video-item").addClass("hidden-video");
+            $(".video-item").slice(0, count).removeClass("hidden-video");
 
-            if (maxVisible >= allItems.length) {
+            if (count >= $(".video-item").length) {
                 $("#more").hide();
             } else {
                 $("#more").show();
             }
         }
 
-        function resetView() {
-            clickCount = 0;
+        function resetToDefault() {
             isSearching = false;
-            updateVisibleVideos();
+            visibleCount = step;
+            renderVideos();
+            showVideos(visibleCount);
         }
 
-        // Shuffle video ban đầu
-        shuffleVideos();
-        resetView();
+        // Bắt đầu
+        shuffle(allItems);
+        resetToDefault();
 
-        // Donate / Ảnh
+        // Nút xem thêm
+        $("#more").click(function () {
+            if (!isSearching) {
+                visibleCount += step;
+                showVideos(visibleCount);
+            }
+        });
+
+        // Nút chuyển Donate / Ảnh
         $("#btn").click(function () {
             $("#video").hide();
             $("#Donate").show();
@@ -1029,39 +1032,31 @@
             $("#btn3").hide();
         });
 
-        // Nút Xem thêm
-        $("#more").click(function () {
-            if (!isSearching) {
-                clickCount++;
-                updateVisibleVideos();
-            }
-        });
-
         // Tìm kiếm
         $("#searchInput").on("input", function () {
             const keyword = $(this).val().trim().toLowerCase();
-            const allItems = $(".video-item");
 
             if (keyword === "") {
-                resetView(); // Quay về hiển thị 12 video đầu
-            } else {
-                isSearching = true;
-                $("#more").hide(); // Ẩn nút khi tìm
-
-                allItems.each(function () {
-                    const name = ($(this).attr("data-name") || "").toLowerCase();
-                    const tags = ($(this).attr("data-tag") || "").toLowerCase();
-
-                    const matchName = name.includes(keyword);
-                    const matchTag = tags.split(',').some(tag => tag.trim().includes(keyword));
-
-                    if (matchName || matchTag) {
-                        $(this).removeClass("hidden-video");
-                    } else {
-                        $(this).addClass("hidden-video");
-                    }
-                });
+                resetToDefault();
+                return;
             }
+
+            isSearching = true;
+            $("#more").hide();
+
+            $(".video-item").each(function () {
+                const name = ($(this).attr("data-name") || "").toLowerCase();
+                const tag = ($(this).attr("data-tag") || "").toLowerCase();
+
+                const matchName = name.includes(keyword);
+                const matchTag = tag.split(',').some(t => t.trim().includes(keyword));
+
+                if (matchName || matchTag) {
+                    $(this).removeClass("hidden-video");
+                } else {
+                    $(this).addClass("hidden-video");
+                }
+            });
         });
     });
 </script>
