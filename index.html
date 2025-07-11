@@ -958,12 +958,15 @@
         <button id="btn2" class="btn text-light">Trở lại</button>
     </div>
 
+
+
+    
     <script>
 $(document).ready(function () {
     $("#Donate").hide();
     $("#imgsex").hide();
 
-    const visibleCount = 12;
+    let visibleCount = 12;
 
     function shuffleVideos() {
         const container = $("#videoContainer");
@@ -986,7 +989,13 @@ $(document).ready(function () {
                 $(this).addClass("hidden-video");
             }
         });
-        $("#more").show();
+
+        // Kiểm tra còn video để hiện không
+        if (visibleCount >= allItems.length) {
+            $("#more").hide();
+        } else {
+            $("#more").show();
+        }
     }
 
     // Gọi xáo trộn và hiển thị ban đầu
@@ -1016,8 +1025,8 @@ $(document).ready(function () {
 
     // Nút xem thêm
     $("#more").click(function () {
-        $(".video-item").removeClass("hidden-video");
-        $(this).hide();
+        visibleCount += 12;
+        updateInitialDisplay();
     });
 
     // Tìm kiếm
@@ -1032,6 +1041,7 @@ $(document).ready(function () {
             const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
 
             if (value === "") {
+                visibleCount = 12;
                 updateInitialDisplay();
             } else {
                 if (isMatch) {
@@ -1039,22 +1049,12 @@ $(document).ready(function () {
                 } else {
                     $(this).addClass("hidden-video");
                 }
-                $("#more").hide();
+                $("#more").hide(); // Ẩn nút xem thêm khi tìm kiếm
             }
         });
     });
 });
 
-
-    // Dừng video khi rời tab
-    document.addEventListener("visibilitychange", function () {
-        if (document.hidden) {
-            $("video").each(function () {
-                this.pause();
-            });
-        }
-    });
-});
 </script>
 
 
