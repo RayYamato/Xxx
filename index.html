@@ -962,6 +962,20 @@
 
     
      <script>
+         function pauseAllVideos() {
+    // Dừng tất cả video HTML5
+    $("video").each(function () {
+        this.pause();
+        this.currentTime = 0;
+    });
+
+    // Dừng tất cả iframe (Vimeo, YouTube)
+    $("iframe").each(function () {
+        const src = $(this).attr("src");
+        $(this).attr("src", src); // reset để dừng phát
+    });
+}
+
     $(document).ready(function () {
         $("#Donate").hide();
         $("#imgsex").hide();
@@ -1010,12 +1024,14 @@
 
         // Nút Donate
         $("#btn").click(function () {
+            pauseAllVideos(); // Dừng video
             $("#video").hide();
             $("#Donate").show();
             $("#btn3").hide();
         });
 
         $("#btn2, #btn4").click(function () {
+            pauseAllVideos(); // Dừng video
             $("#video").show();
             $("#Donate").hide();
             $("#imgsex").hide();
@@ -1023,6 +1039,7 @@
         });
 
         $("#btn3").click(function () {
+            pauseAllVideos(); // Dừng video
             $("#video").hide();
             $("#Donate").hide();
             $("#imgsex").show();
@@ -1040,6 +1057,17 @@
             const value = normalizeText($(this).val().trim());
             const allItems = $(".video-item");
 
+            // 🔴 Dừng tất cả video đang phát (video tag)
+            $("video").each(function () {
+                this.pause();
+            });
+
+            // 🔴 Reset tất cả iframe video (ví dụ: Vimeo, YouTube)
+            $("iframe").each(function () {
+                const src = $(this).attr("src");
+                $(this).attr("src", src);
+            });
+            
             if (value === "") {
                 visibleCount = 12;
                 updateInitialDisplay();
