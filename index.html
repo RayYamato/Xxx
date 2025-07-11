@@ -1025,7 +1025,16 @@
             $("#searchInput").on("input", function () {
                 const value = $(this).val().trim().toLowerCase();
                 const allItems = $(".video-item");
+                // 🔴 Dừng tất cả video đang phát (video tag)
+            $("video").each(function () {
+                this.pause();
+            });
 
+            // 🔴 Reset tất cả iframe video (ví dụ: Vimeo, YouTube)
+            $("iframe").each(function () {
+                const src = $(this).attr("src");
+                $(this).attr("src", src);
+            });
                 allItems.each(function () {
                     const name = $(this).data("name")?.toLowerCase() || "";
                     const rawTags = $(this).data("tag")?.toLowerCase() || "";
