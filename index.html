@@ -968,6 +968,18 @@
 
             const visibleCount = 12;
 
+            // Xáo trộn video
+                function shuffleVideos() {
+                    const container = $("#videoContainer");
+                    const videos = container.children(".video-item").toArray();
+        
+                    for (let i = videos.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [videos[i], videos[j]] = [videos[j], videos[i]];
+                    }
+        
+                    container.empty().append(videos);
+                }
             function updateInitialDisplay() {
                 const allItems = $(".video-item");
                 allItems.each(function (i) {
@@ -979,7 +991,7 @@
                 });
                 $("#more").show();
             }
-
+            shuffleVideos();
             updateInitialDisplay(); // Gọi khi vừa tải trang
 
             // Nút Donate
