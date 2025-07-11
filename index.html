@@ -981,38 +981,38 @@
             allItems.forEach(item => $("#videoContainer").append(item));
         }
 
-        function showVideos(count) {
-            const $videos = $(".video-item");
-            $videos.addClass("hidden-video");
-            $videos.slice(0, count).removeClass("hidden-video");
+        function showDefaultVideos() {
+            $(".video-item").addClass("hidden-video");
+            $(".video-item").slice(0, visibleCount).removeClass("hidden-video");
 
-            if (count >= $videos.length) {
-                $("#more").hide(); // ✅ Ẩn nếu đã hiện hết
+            // Ẩn nút nếu đã hiện 24 video
+            if (visibleCount >= 24 || visibleCount >= $(".video-item").length) {
+                $("#more").hide();
             } else {
                 $("#more").show();
             }
         }
 
-        function resetToDefault() {
+        function resetDefaultView() {
             isSearching = false;
             visibleCount = step;
+            shuffle(allItems);
             renderVideos();
-            showVideos(visibleCount);
+            showDefaultVideos();
         }
 
-        // ✅ Khởi tạo ban đầu
-        shuffle(allItems);
-        resetToDefault();
+        // ✅ Load trang: khởi tạo
+        resetDefaultView();
 
-        // 👉 Nút xem thêm
+        // 👉 Nút "Xem thêm"
         $("#more").click(function () {
             if (!isSearching) {
                 visibleCount += step;
-                showVideos(visibleCount); // ✅ sẽ tự ẩn nếu hết video
+                showDefaultVideos();
             }
         });
 
-        // Giao diện chuyển đổi
+        // 👉 Chuyển giữa các phần
         $("#btn").click(() => { $("#video").hide(); $("#Donate").show(); $("#btn3").hide(); });
         $("#btn2, #btn4").click(() => { $("#video").show(); $("#Donate").hide(); $("#imgsex").hide(); $("#btn3").show(); });
         $("#btn3").click(() => { $("#video").hide(); $("#Donate").hide(); $("#imgsex").show(); $("#btn3").hide(); });
@@ -1022,12 +1022,12 @@
             const keyword = $(this).val().trim().toLowerCase();
 
             if (keyword === "") {
-                resetToDefault();
+                resetDefaultView();
                 return;
             }
 
             isSearching = true;
-            $("#more").hide(); // ✅ ẩn nút khi đang tìm kiếm
+            $("#more").hide(); // ẩn nút xem thêm khi tìm kiếm
 
             $(".video-item").each(function () {
                 const name = ($(this).attr("data-name") || "").toLowerCase();
@@ -1042,8 +1042,6 @@
         });
     });
 </script>
-
-
 </body>
 
 </html>
