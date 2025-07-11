@@ -959,101 +959,110 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            $("#Donate").hide();
-            $("#imgsex").hide();
+    $(document).ready(function () {
+        $("#Donate").hide();
+        $("#imgsex").hide();
 
-            let visibleCount = 12;
+        const step = 12;
+        let clickCount = 0;
 
-            function shuffleVideos() {
-                const container = $("#videoContainer");
-                const videos = container.children(".video-item").toArray();
+        function shuffleVideos() {
+            const container = $("#videoContainer");
+            const videos = container.children(".video-item").toArray();
 
-                for (let i = videos.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [videos[i], videos[j]] = [videos[j], videos[i]];
-                }
-
-                container.empty().append(videos);
+            for (let i = videos.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [videos[i], videos[j]] = [videos[j], videos[i]];
             }
 
-            function updateInitialDisplay() {
-                const allItems = $(".video-item");
-                allItems.each(function (i) {
-                    if (i < visibleCount) {
+            container.empty().append(videos);
+        }
+
+        function updateVisibleVideos() {
+            const allItems = $(".video-item");
+            const maxVisible = (clickCount + 1) * step;
+
+            allItems.each(function (i) {
+                if (i < maxVisible) {
+                    $(this).removeClass("hidden-video");
+                } else {
+                    $(this).addClass("hidden-video");
+                }
+            });
+
+            // Ẩn nút nếu đã nhấn 1 lần (tức hiển thị 24 video) hoặc đã hết video
+            if (clickCount >= 1 || maxVisible >= allItems.length) {
+                $("#more").hide();
+            } else {
+                $("#more").show();
+            }
+        }
+
+        function resetView() {
+            clickCount = 0;
+            updateVisibleVideos();
+        }
+
+        // Khởi tạo
+        shuffleVideos();
+        resetView();
+
+        // Nút "Donate"
+        $("#btn").click(function () {
+            $("#video").hide();
+            $("#Donate").show();
+            $("#btn3").hide();
+        });
+
+        $("#btn2, #btn4").click(function () {
+            $("#video").show();
+            $("#Donate").hide();
+            $("#imgsex").hide();
+            $("#btn3").show();
+        });
+
+        $("#btn3").click(function () {
+            $("#video").hide();
+            $("#Donate").hide();
+            $("#imgsex").show();
+            $("#btn3").hide();
+        });
+
+        // Nút "Xem thêm"
+        $("#more").click(function () {
+            clickCount++;
+            updateVisibleVideos();
+        });
+
+        // Tìm kiếm
+        $("#searchInput").on("input", function () {
+            const value = $(this).val().trim().toLowerCase();
+            const allItems = $(".video-item");
+
+            if (value === "") {
+                // Nếu ô tìm kiếm rỗng => trở lại mặc định
+                resetView();
+            } else {
+                allItems.each(function () {
+                    const name = $(this).data("name")?.toLowerCase() || "";
+                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
+                    const tags = rawTags.split(',').map(t => t.trim());
+                    const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+
+                    if (isMatch) {
                         $(this).removeClass("hidden-video");
                     } else {
                         $(this).addClass("hidden-video");
                     }
                 });
 
-                // Ẩn nút nếu không còn video nào nữa
-                if (visibleCount >= allItems.length) {
-                    $("#more").hide();
-                } else {
-                    $("#more").show();
-                }
+                // Ẩn nút xem thêm khi tìm kiếm
+                $("#more").hide();
             }
-
-            // Xáo trộn và hiển thị ban đầu
-            shuffleVideos();
-            updateInitialDisplay();
-
-            // Nút "Donate"
-            $("#btn").click(function () {
-                $("#video").hide();
-                $("#Donate").show();
-                $("#btn3").hide();
-            });
-
-            $("#btn2, #btn4").click(function () {
-                $("#video").show();
-                $("#Donate").hide();
-                $("#imgsex").hide();
-                $("#btn3").show();
-            });
-
-            // Nút "Xem ảnh"
-            $("#btn3").click(function () {
-                $("#video").hide();
-                $("#Donate").hide();
-                $("#imgsex").show();
-                $("#btn3").hide();
-            });
-
-            // Nút "Xem thêm"
-            $("#more").click(function () {
-                visibleCount += 12;
-                updateInitialDisplay();
-            });
-
-            // Tìm kiếm
-            $("#searchInput").on("input", function () {
-                const value = $(this).val().trim().toLowerCase();
-                const allItems = $(".video-item");
-
-                if (value === "") {
-                    updateInitialDisplay(); // Quay lại hiển thị 12 hoặc 24
-                } else {
-                    allItems.each(function () {
-                        const name = $(this).data("name")?.toLowerCase() || "";
-                        const rawTags = $(this).data("tag")?.toLowerCase() || "";
-                        const tags = rawTags.split(',').map(t => t.trim());
-                        const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
-
-                        if (isMatch) {
-                            $(this).removeClass("hidden-video");
-                        } else {
-                            $(this).addClass("hidden-video");
-                        }
-                    });
-
-                    // Ẩn nút xem thêm khi tìm kiếm
-                    $("#more").hide();
-                }
-            });
         });
-    </script>
+    });
+</script>
+
 
 </body>
 
