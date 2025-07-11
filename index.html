@@ -965,6 +965,10 @@ $(document).ready(function () {
 
     let visibleCount = 12;
 
+    function normalize(text) {
+        return text?.toLowerCase().replace(/\s+/g, "") || "";
+    }
+
     function shuffleVideos() {
         const container = $("#videoContainer");
         const videos = container.children(".video-item").toArray();
@@ -994,11 +998,11 @@ $(document).ready(function () {
         }
     }
 
-    // Xáo trộn và hiển thị ban đầu
+    // Shuffle và hiển thị ban đầu
     shuffleVideos();
     updateInitialDisplay();
 
-    // Nút Donate
+    // Nút chuyển vùng hiển thị
     $("#btn").click(function () {
         $("#video").hide();
         $("#Donate").show();
@@ -1012,7 +1016,6 @@ $(document).ready(function () {
         $("#btn3").show();
     });
 
-    // Nút Xem ảnh
     $("#btn3").click(function () {
         $("#video").hide();
         $("#Donate").hide();
@@ -1020,44 +1023,39 @@ $(document).ready(function () {
         $("#btn3").hide();
     });
 
-    // Nút Xem thêm
+    // Nút xem thêm
     $("#more").click(function () {
         visibleCount += 12;
         updateInitialDisplay();
     });
 
-    // Tìm kiếm
+    // Tìm kiếm chính xác theo data-name và name-tag
     $("#searchInput").on("input", function () {
-        const value = $(this).val().trim().toLowerCase();
+        const keyword = normalize($(this).val().trim());
         const allItems = $(".video-item");
 
-        if (value === "") {
-            // Quay về hiển thị mặc định
+        if (keyword === "") {
             visibleCount = 12;
             updateInitialDisplay();
         } else {
-            let matchCount = 0;
-
             allItems.each(function () {
-                const name = $(this).data("name")?.toLowerCase() || "";
-                const rawTags = $(this).attr("name-tag")?.toLowerCase() || "";
-                const tags = rawTags.split(',').map(t => t.trim());
-                const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+                const name = normalize($(this).data("name"));
+                const tags = normalize($(this).attr("name-tag"));
+
+                const isMatch = name.includes(keyword) || tags.includes(keyword);
 
                 if (isMatch) {
                     $(this).removeClass("hidden-video");
-                    matchCount++;
                 } else {
                     $(this).addClass("hidden-video");
                 }
             });
 
-            // Khi tìm kiếm thì luôn ẩn nút xem thêm
             $("#more").hide();
         }
     });
 
-    // Dừng video khi chuyển trang/tab
+    // Dừng tất cả video khi rời tab
     document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
             $("video").each(function () {
@@ -1067,6 +1065,7 @@ $(document).ready(function () {
     });
 });
 </script>
+
 
 </body>
 
