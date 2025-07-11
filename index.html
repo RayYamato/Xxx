@@ -963,7 +963,8 @@
             $("#Donate").hide();
             $("#imgsex").hide();
 
-            const visibleCount = 12;
+            const visiblePerPage = 12;
+            let currentVisible = visiblePerPage;
 
             function shuffleVideos() {
                 const container = $("#videoContainer");
@@ -977,21 +978,26 @@
                 container.empty().append(videos);
             }
 
-            function updateInitialDisplay() {
+            function updateDisplay() {
                 const allItems = $(".video-item");
                 allItems.each(function (i) {
-                    if (i < visibleCount) {
+                    if (i < currentVisible) {
                         $(this).removeClass("hidden-video");
                     } else {
                         $(this).addClass("hidden-video");
                     }
                 });
-                $("#more").show();
+
+                if (currentVisible >= allItems.length) {
+                    $("#more").hide();
+                } else {
+                    $("#more").show();
+                }
             }
 
             // Gọi xáo trộn và hiển thị ban đầu
             shuffleVideos();
-            updateInitialDisplay();
+            updateDisplay();
 
             // Nút Donate
             $("#btn").click(function () {
@@ -1014,10 +1020,10 @@
                 $("#btn3").hide();
             });
 
-            // Nút xem thêm
+            // Nút xem thêm: mỗi lần chỉ tăng thêm 12
             $("#more").click(function () {
-                $(".video-item").removeClass("hidden-video");
-                $(this).hide();
+                currentVisible += visiblePerPage;
+                updateDisplay();
             });
 
             // Tìm kiếm
@@ -1025,27 +1031,28 @@
                 const value = $(this).val().trim().toLowerCase();
                 const allItems = $(".video-item");
 
+                if (value === "") {
+                    currentVisible = visiblePerPage;
+                    updateDisplay();
+                    return;
+                }
+
                 allItems.each(function () {
                     const name = $(this).data("name")?.toLowerCase() || "";
                     const rawTags = $(this).data("tag")?.toLowerCase() || "";
                     const tags = rawTags.split(',').map(t => t.trim());
                     const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
 
-                    if (value === "") {
-                        updateInitialDisplay();
+                    if (isMatch) {
+                        $(this).removeClass("hidden-video");
                     } else {
-                        if (isMatch) {
-                            $(this).removeClass("hidden-video");
-                        } else {
-                            $(this).addClass("hidden-video");
-                        }
-                        $("#more").hide();
+                        $(this).addClass("hidden-video");
                     }
                 });
+
+                $("#more").hide();
             });
         });
-
-
     </script>
 
 </body>
