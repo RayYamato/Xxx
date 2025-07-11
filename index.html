@@ -982,11 +982,12 @@
         }
 
         function showVideos(count) {
-            $(".video-item").addClass("hidden-video");
-            $(".video-item").slice(0, count).removeClass("hidden-video");
+            const $videos = $(".video-item");
+            $videos.addClass("hidden-video");
+            $videos.slice(0, count).removeClass("hidden-video");
 
-            if (count >= $(".video-item").length) {
-                $("#more").hide();
+            if (count >= $videos.length) {
+                $("#more").hide(); // ✅ Ẩn nếu đã hiện hết
             } else {
                 $("#more").show();
             }
@@ -999,24 +1000,24 @@
             showVideos(visibleCount);
         }
 
-        // Khởi tạo ban đầu
+        // ✅ Khởi tạo ban đầu
         shuffle(allItems);
         resetToDefault();
 
-        // Nút xem thêm
+        // 👉 Nút xem thêm
         $("#more").click(function () {
             if (!isSearching) {
                 visibleCount += step;
-                showVideos(visibleCount);
+                showVideos(visibleCount); // ✅ sẽ tự ẩn nếu hết video
             }
         });
 
-        // Nút chuyển giao diện
+        // Giao diện chuyển đổi
         $("#btn").click(() => { $("#video").hide(); $("#Donate").show(); $("#btn3").hide(); });
         $("#btn2, #btn4").click(() => { $("#video").show(); $("#Donate").hide(); $("#imgsex").hide(); $("#btn3").show(); });
         $("#btn3").click(() => { $("#video").hide(); $("#Donate").hide(); $("#imgsex").show(); $("#btn3").hide(); });
 
-        // Tìm kiếm
+        // 👉 Tìm kiếm
         $("#searchInput").on("input", function () {
             const keyword = $(this).val().trim().toLowerCase();
 
@@ -1026,7 +1027,7 @@
             }
 
             isSearching = true;
-            $("#more").hide();
+            $("#more").hide(); // ✅ ẩn nút khi đang tìm kiếm
 
             $(".video-item").each(function () {
                 const name = ($(this).attr("data-name") || "").toLowerCase();
@@ -1041,6 +1042,7 @@
         });
     });
 </script>
+
 
 </body>
 
