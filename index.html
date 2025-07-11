@@ -895,7 +895,7 @@
 
         </div>
         <div class="mt-5">
-            <button id="more" class=" btn w-100 text-light">xem thêm</button>
+            <button id="more" class=" btn w-100 text-light">xem thêm Video khác</button>
         </div>
     </div>
     <div>
@@ -1062,10 +1062,14 @@
             $("#more").hide(); // Ẩn nút khi tìm kiếm
         });
     });
+         document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            $("video").each(function () {
+                this.pause();
+            });
+        }
+    });
 </script>
-
-
-
 </body>
 
 </html>
