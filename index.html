@@ -962,28 +962,25 @@
 $(document).ready(function () {
     $("#Donate").hide();
     $("#imgsex").hide();
-
     let visibleCount = 12;
 
-    // Hàm chuẩn hóa text: không phân biệt hoa thường, xóa khoảng trắng
-    function normalize(text) {
-        return (text || "").toLowerCase().replace(/\s+/g, "");
+    function normalizeVietnamese(str) {
+        return (str || "").toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")  // loại bỏ dấu
+            .replace(/\s+/g, "");             // xóa khoảng trắng
     }
 
-    // Xáo trộn video
     function shuffleVideos() {
         const container = $("#videoContainer");
         const videos = container.children(".video-item").toArray();
-
         for (let i = videos.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [videos[i], videos[j]] = [videos[j], videos[i]];
         }
-
         container.empty().append(videos);
     }
 
-    // Hiển thị số lượng video theo visibleCount
     function updateInitialDisplay() {
         const allItems = $(".video-item");
         allItems.each(function (i) {
@@ -994,7 +991,6 @@ $(document).ready(function () {
             }
         });
 
-        // Ẩn nút nếu đã hiển thị đủ video
         if (visibleCount >= allItems.length) {
             $("#more").hide();
         } else {
@@ -1002,11 +998,9 @@ $(document).ready(function () {
         }
     }
 
-    // Khởi đầu
     shuffleVideos();
     updateInitialDisplay();
 
-    // Nút điều hướng
     $("#btn").click(() => {
         $("#video").hide();
         $("#Donate").show();
@@ -1027,15 +1021,13 @@ $(document).ready(function () {
         $("#btn3").hide();
     });
 
-    // Nút xem thêm: chỉ hiện thêm 12 video, sau đó ẩn
     $("#more").click(() => {
         visibleCount += 12;
         updateInitialDisplay();
     });
 
-    // Tìm kiếm theo data-name và name-tag (tùy ý)
     $("#searchInput").on("input", function () {
-        const keyword = normalize($(this).val().trim());
+        const keyword = normalizeVietnamese($(this).val().trim());
         const allItems = $(".video-item");
 
         if (keyword === "") {
@@ -1043,9 +1035,8 @@ $(document).ready(function () {
             updateInitialDisplay();
         } else {
             allItems.each(function () {
-                const name = normalize($(this).data("name"));
-                const tag = normalize($(this).attr("name-tag")); // lấy thuộc tính name-tag
-
+                const name = normalizeVietnamese($(this).data("name"));
+                const tag = normalizeVietnamese($(this).attr("name-tag"));
                 const isMatch = name.includes(keyword) || tag.includes(keyword);
 
                 if (isMatch) {
@@ -1055,7 +1046,7 @@ $(document).ready(function () {
                 }
             });
 
-            $("#more").hide(); // Ẩn nút xem thêm khi đang tìm
+            $("#more").hide(); // ẩn nút khi đang tìm
         }
     });
 
@@ -1069,9 +1060,6 @@ $(document).ready(function () {
     });
 });
 </script>
-
-
-
 </body>
 
 </html>
