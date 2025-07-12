@@ -1074,29 +1074,29 @@
 
     // Tìm kiếm hỗ trợ cụm từ
     $("#searchInput").on("input", function () {
-        const value = $(this).val().trim().toLowerCase();
-        const allItems = $(".video-item");
+    const value = $(this).val().trim().toLowerCase();
+    const allItems = $(".video-item");
 
-        if (value === "") {
-            updateInitialDisplay();
-            return;
+    if (value === "") {
+        updateInitialDisplay();
+        return;
+    }
+
+    allItems.each(function () {
+        const name = ($(this).data("name") || "").toLowerCase();
+        const tag = ($(this).data("tag") || "").toLowerCase();
+        const combined = name + " " + tag;
+
+        if (combined.includes(value)) {
+            $(this).removeClass("hidden-video");
+        } else {
+            $(this).addClass("hidden-video");
         }
-
-        allItems.each(function () {
-            const name = ($(this).data("name") || "").toLowerCase();
-            const rawTags = ($(this).data("tag") || "").toLowerCase();
-            const combined = name + " " + rawTags;
-
-            // So sánh toàn bộ cụm từ
-            if (combined.includes(value)) {
-                $(this).removeClass("hidden-video");
-            } else {
-                $(this).addClass("hidden-video");
-            }
-        });
-
-        $("#more").hide();
     });
+
+    $("#more").hide();
+});
+
 });
 
 </script>
