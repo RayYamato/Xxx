@@ -1027,84 +1027,81 @@
 
     
       <script>
-    $(document).ready(function () {
-    $("#Donate").hide();
-    $("#imgsex").hide();
+        $(document).ready(function () {
+            $("#Donate").hide();
+            $("#imgsex").hide();
 
-    const visibleCount = 12;
+            const visibleCount = 12;
 
-    function updateInitialDisplay() {
-        const allItems = $(".video-item");
-        allItems.each(function (i) {
-            if (i < visibleCount) {
-                $(this).removeClass("hidden-video");
-            } else {
-                $(this).addClass("hidden-video");
+            function updateInitialDisplay() {
+                const allItems = $(".video-item");
+                allItems.each(function (i) {
+                    if (i < visibleCount) {
+                        $(this).removeClass("hidden-video");
+                    } else {
+                        $(this).addClass("hidden-video");
+                    }
+                });
+                $("#more").show();
             }
+
+            updateInitialDisplay(); // Gọi khi vừa tải trang
+
+            // Nút Donate
+            $("#btn").click(function () {
+                $("#video").hide();
+                $("#Donate").show();
+                $("#btn3").hide();
+            });
+
+            $("#btn2, #btn4").click(function () {
+                $("#video").show();
+                $("#Donate").hide();
+                $("#imgsex").hide();
+                $("#btn3").show();
+            });
+
+            $("#btn3").click(function () {
+                $("#video").hide();
+                $("#Donate").hide();
+                $("#imgsex").show();
+                $("#btn3").hide();
+            });
+
+            // Nút xem thêm
+            $("#more").click(function () {
+                $(".video-item").removeClass("hidden-video");
+                $(this).hide();
+            });
+
+            // Tìm kiếm
+            $("#searchInput").on("input", function () {
+                const value = $(this).val().trim().toLowerCase();
+                const allItems = $(".video-item");
+
+                allItems.each(function () {
+                    const name = $(this).data("name")?.toLowerCase() || "";
+                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
+                    const tags = rawTags.split(',').map(t => t.trim());
+                    const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+
+                    if (value === "") {
+                        // Không có tìm kiếm: hiện lại đúng 12 cái
+                        updateInitialDisplay();
+                    } else {
+                        // Có tìm kiếm: hiện tất cả khớp
+                        if (isMatch) {
+                            $(this).removeClass("hidden-video");
+                        } else {
+                            $(this).addClass("hidden-video");
+                        }
+                        $("#more").hide();
+                    }
+                });
+            });
         });
-        $("#more").show();
-    }
 
-    updateInitialDisplay(); // Gọi khi vừa tải trang
-
-    // Nút Donate
-    $("#btn").click(function () {
-        $("#video").hide();
-        $("#Donate").show();
-        $("#btn3").hide();
-    });
-
-    $("#btn2, #btn4").click(function () {
-        $("#video").show();
-        $("#Donate").hide();
-        $("#imgsex").hide();
-        $("#btn3").show();
-    });
-
-    $("#btn3").click(function () {
-        $("#video").hide();
-        $("#Donate").hide();
-        $("#imgsex").show();
-        $("#btn3").hide();
-    });
-
-    // Nút xem thêm
-    $("#more").click(function () {
-        $(".video-item").removeClass("hidden-video");
-        $(this).hide();
-    });
-
-    // Tìm kiếm hỗ trợ cụm từ
-    $("#searchInput").on("input", function () {
-    const value = $(this).val().trim().toLowerCase();
-    const allItems = $(".video-item");
-
-    if (value === "") {
-        updateInitialDisplay();
-        return;
-    }
-
-    allItems.each(function () {
-        const name = ($(this).data("name") || "").toLowerCase();
-        const tag = ($(this).data("tag") || "").toLowerCase();
-        const combined = name + " " + tag;
-
-        if (combined.includes(value)) {
-            $(this).removeClass("hidden-video");
-        } else {
-            $(this).addClass("hidden-video");
-        }
-    });
-
-    $("#more").hide();
-});
-
-});
-
-</script>
-
-
-
+    </script>
 </body>
 
 </html>
