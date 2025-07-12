@@ -1029,81 +1029,89 @@
 
     
       <script>
-        $(document).ready(function () {
+    // 👉 Chuẩn hóa chuỗi: loại bỏ dấu tiếng Việt + viết thường
+    function normalizeText(text) {
+        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    $(document).ready(function () {
+        $("#Donate").hide();
+        $("#imgsex").hide();
+
+        const visibleCount = 12;
+
+        function updateInitialDisplay() {
+            const allItems = $(".video-item");
+            allItems.each(function (i) {
+                if (i < visibleCount) {
+                    $(this).removeClass("hidden-video");
+                } else {
+                    $(this).addClass("hidden-video");
+                }
+            });
+            $("#more").show();
+        }
+
+        updateInitialDisplay(); // Gọi khi vừa tải trang
+
+        // Nút Donate
+        $("#btn").click(function () {
+            $("#video").hide();
+            $("#Donate").show();
+            $("#btn3").hide();
+        });
+
+        $("#btn2, #btn4").click(function () {
+            $("#video").show();
             $("#Donate").hide();
             $("#imgsex").hide();
+            $("#btn3").show();
+        });
 
-            const visibleCount = 12;
+        $("#btn3").click(function () {
+            $("#video").hide();
+            $("#Donate").hide();
+            $("#imgsex").show();
+            $("#btn3").hide();
+        });
 
-            function updateInitialDisplay() {
-                const allItems = $(".video-item");
-                allItems.each(function (i) {
-                    if (i < visibleCount) {
+        // Nút xem thêm
+        $("#more").click(function () {
+            $(".video-item").removeClass("hidden-video");
+            $(this).hide();
+        });
+
+        // Tìm kiếm
+        $("#searchInput").on("input", function () {
+            const value = normalizeText($(this).val());
+            const allItems = $(".video-item");
+
+            allItems.each(function () {
+                const name = normalizeText($(this).data("name") || "");
+                const rawTags = normalizeText($(this).data("tag") || "");
+                const tags = rawTags.split(',').map(t => t.trim());
+
+                const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
+
+                if (value === "") {
+                    updateInitialDisplay();
+                } else {
+                    if (isMatch) {
                         $(this).removeClass("hidden-video");
                     } else {
                         $(this).addClass("hidden-video");
                     }
-                });
-                $("#more").show();
+                }
+            });
+
+            // Ẩn nút "xem thêm" khi đang tìm kiếm
+            if (value !== "") {
+                $("#more").hide();
             }
-
-            updateInitialDisplay(); // Gọi khi vừa tải trang
-
-            // Nút Donate
-            $("#btn").click(function () {
-                $("#video").hide();
-                $("#Donate").show();
-                $("#btn3").hide();
-            });
-
-            $("#btn2, #btn4").click(function () {
-                $("#video").show();
-                $("#Donate").hide();
-                $("#imgsex").hide();
-                $("#btn3").show();
-            });
-
-            $("#btn3").click(function () {
-                $("#video").hide();
-                $("#Donate").hide();
-                $("#imgsex").show();
-                $("#btn3").hide();
-            });
-
-            // Nút xem thêm
-            $("#more").click(function () {
-                $(".video-item").removeClass("hidden-video");
-                $(this).hide();
-            });
-
-            // Tìm kiếm
-            $("#searchInput").on("input", function () {
-                const value = $(this).val().trim().toLowerCase();
-                const allItems = $(".video-item");
-
-                allItems.each(function () {
-                    const name = $(this).data("name")?.toLowerCase() || "";
-                    const rawTags = $(this).data("tag")?.toLowerCase() || "";
-                    const tags = rawTags.split(',').map(t => t.trim());
-                    const isMatch = name.includes(value) || tags.some(tag => tag.includes(value));
-
-                    if (value === "") {
-                        // Không có tìm kiếm: hiện lại đúng 12 cái
-                        updateInitialDisplay();
-                    } else {
-                        // Có tìm kiếm: hiện tất cả khớp
-                        if (isMatch) {
-                            $(this).removeClass("hidden-video");
-                        } else {
-                            $(this).addClass("hidden-video");
-                        }
-                        $("#more").hide();
-                    }
-                });
-            });
         });
+    });
+</script>
 
-    </script>
 </body>
 
 </html>
