@@ -1120,6 +1120,19 @@
 
     
       <script>
+          function shuffleImages() {
+                const $rows = $("#imgsex .row"); // vùng chứa ảnh
+                const $items = $rows.children(".p-3").toArray(); // mỗi ảnh là 1 .p-3
+    
+                // Xáo trộn
+                for (let i = $items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [$items[i], $items[j]] = [$items[j], $items[i]];
+                }
+    
+                // Gắn lại ảnh theo vị trí mới
+                $rows.empty().append($items);
+            }
         function normalizeText(text) {
             return text
                 .toLowerCase()
@@ -1229,6 +1242,8 @@
                 $("#Donate").hide();
                 $("#imgsex").show();
                 $("#btn3").hide();
+                // Xáo trộn ảnh mỗi lần xem
+                shuffleImages();
             });
         });
     </script>
