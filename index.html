@@ -20,12 +20,17 @@
 
 <body class="bg-dark text-light">
     <div id="video" class="container mt-4">
-        <div class="mb-3 position-relative">
-            <div class="d-flex">
-                <input type="text" id="searchInput" class="form-control w-50" placeholder="Tìm kiếm video...">
-                <button id="btn" class="btn text-light">Donate</button>
-                <ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+        <div class="mb-3 position-relative d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center flex-grow-1 me-3">
+                <input type="text" id="searchInput" class="form-control w-50 me-2" placeholder="Tìm kiếm video...">
+                <button id="btn" class="btn btn-primary">Donate</button>
+                <ul id="suggestions" class="list-group position-absolute w-50" style="z-index: 1000;"></ul>
             </div>
+
+            <video id="gifVideo" autoplay loop muted playsinlinee
+                style="width: 10%; height: auto; border-radius: 8px;pointer-events:none;">
+                <source src="https://pixeldrain.com/api/file/Zhm36Jcn" type="video/mp4" />
+            </video>
         </div>
 
         <div class="row row-cols-4" id="videoContainer">
@@ -1218,5 +1223,6 @@
 </body>
 
 </html>
+
 
 
